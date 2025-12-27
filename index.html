@@ -1,8 +1,8 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sana Bir Kalp 💗</title>
 
 <style>
@@ -12,21 +12,17 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#ffb6c1,#ffe4ec);
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#ffb6c1,#ffe4ec);
   overflow:hidden;
 }
 .card{
   width:min(420px,92vw);
-  background: rgba(255,255,255,.6);
+  background:rgba(255,255,255,.6);
   border-radius:26px;
   padding:22px;
-  box-shadow:0 20px 60px rgba(255,105,135,.25);
   text-align:center;
-  position:relative;
-  z-index:2;
 }
-h1{margin:0 0 10px;font-size:26px;}
 .heart{
   font-size:96px;
   cursor:pointer;
@@ -42,23 +38,16 @@ h1{margin:0 0 10px;font-size:26px;}
   min-height:90px;
   white-space:pre-line;
 }
-.note{
-  margin-top:14px;
-  font-size:13px;
-  opacity:.8;
-}
 .mini{
   position:fixed;
   font-size:18px;
   pointer-events:none;
   animation:fly 1s ease-out forwards;
-  z-index:3;
 }
 @keyframes fly{
   from{opacity:1;transform:translate(0,0)}
   to{opacity:0;transform:translate(var(--x),var(--y))}
 }
-iframe{display:none;}
 </style>
 </head>
 
@@ -68,88 +57,58 @@ iframe{display:none;}
   <h1>Sana Bir Kalp Bıraktım 💞</h1>
   <div class="heart" id="heart">💖</div>
   <div class="poem" id="poem"></div>
-  <div class="note">Bu kalp sana her dokunuşunda biraz daha aşık olur.</div>
 </div>
 
-<!-- DRIVE PLAYER (GARANTİLİ) -->
-<iframe
-  id="player"
-  src="https://drive.google.com/file/d/1i7tc5XZNlTy1hEtjP9NRUJxbmp4apYXZ/preview"
-  allow="autoplay">
-</iframe>
-
 <script>
-const poemText =
+// ✍️ Şiir metni
+const poemText = 
 `Kalbim adını ezberledi sessizce,
 Her atışında seni söyledi.
 Dünya dursa bile bir yerde,
 Ben yine sana gelirdim.`;
 
-const poem = document.getElementById("poem");
 const heart = document.getElementById("heart");
-const player = document.getElementById("player");
+const poem = document.getElementById("poem");
+
 let started=false;
 
-function typePoem(){
-  poem.textContent="";
-  let i=0;
-  function t(){
-    if(i<poemText.length){
-      poem.textContent+=poemText.charAt(i);
-      i++;
-      setTimeout(t,45);
-    }
-  }
-  t();
-}
+// 🖱️ Kalbe tıklanınca
+heart.addEventListener("click",(e)=>{
 
-function burst(x,y){
-  for(let i=0;i<14;i++){
+  // ✨ Kalp uçuşu
+  for(let i=0;i<12;i++){
     const h=document.createElement("div");
     h.className="mini";
     h.textContent="💗";
-    h.style.left=x+"px";
-    h.style.top=y+"px";
+    h.style.left=e.clientX+"px";
+    h.style.top=e.clientY+"px";
     h.style.setProperty("--x",(Math.random()*200-100)+"px");
     h.style.setProperty("--y",(Math.random()*-200)+"px");
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),1000);
   }
-}
 
-heart.addEventListener("click",(e)=>{
-  burst(e.clientX,e.clientY);
+  // 🎤 Şiiri yaz
   if(!started){
-    typePoem();
-    // iframe reload = play
-    player.src = player.src;
+    let idx=0;
+    function type(){
+      if(idx<poemText.length){
+        poem.textContent += poemText.charAt(idx++);
+        setTimeout(type,45);
+      }
+    }
+    type();
+  }
+
+  // 🎧 Müzik çalma
+  if(!started){
     started=true;
+    const a=document.createElement("audio");
+    a.src="music.mp3";
+    a.volume=0.7;
+    a.play().catch(()=>{});
   }
 });
-
-// YILDIZ + KALP YAĞMURU
-function rain(){
-  const e=document.createElement("div");
-  e.style.position="fixed";
-  e.style.left=Math.random()*100+"vw";
-  e.style.top="-20px";
-  e.style.fontSize=(Math.random()*10+12)+"px";
-  e.style.opacity=Math.random();
-  e.style.pointerEvents="none";
-  e.style.zIndex=1;
-  e.innerText=Math.random()>0.5?"✨":"💗";
-  document.body.appendChild(e);
-  let fall=0;
-  const t=setInterval(()=>{
-    fall+=2;
-    e.style.top=fall+"px";
-    if(fall>innerHeight){
-      clearInterval(t);
-      e.remove();
-    }
-  },16);
-}
-setInterval(rain,300);
 </script>
 
 </body>
