@@ -1,115 +1,45 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sana Bir Kalp 💗</title>
-
-<style>
-body{
-  margin:0;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-family:Arial,sans-serif;
-  background:linear-gradient(135deg,#ffb6c1,#ffe4ec);
-  overflow:hidden;
-}
-.card{
-  width:min(420px,92vw);
-  background:rgba(255,255,255,.6);
-  border-radius:26px;
-  padding:22px;
-  text-align:center;
-}
-.heart{
-  font-size:96px;
-  cursor:pointer;
-  animation:pulse 1.4s infinite;
-}
-@keyframes pulse{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.15)}
-}
-.poem{
-  margin-top:16px;
-  font-size:16px;
-  min-height:90px;
-  white-space:pre-line;
-}
-.mini{
-  position:fixed;
-  font-size:18px;
-  pointer-events:none;
-  animation:fly 1s ease-out forwards;
-}
-@keyframes fly{
-  from{opacity:1;transform:translate(0,0)}
-  to{opacity:0;transform:translate(var(--x),var(--y))}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sana Bir Kalp 💗</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ffb6c1, #ffe4ec);
+      font-family: Arial, sans-serif;
+    }
+    .heart {
+      font-size: 100px;
+      cursor: pointer;
+      user-select: none;
+      animation: pulse 1.4s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="card">
-  <h1>Sana Bir Kalp Bıraktım 💞</h1>
-  <div class="heart" id="heart">💖</div>
-  <div class="poem" id="poem"></div>
-</div>
+<div class="heart" id="heart">💖</div>
 
 <script>
-// ✍️ Şiir metni
-const poemText = 
-`Kalbim adını ezberledi sessizce,
-Her atışında seni söyledi.
-Dünya dursa bile bir yerde,
-Ben yine sana gelirdim.`;
-
 const heart = document.getElementById("heart");
-const poem = document.getElementById("poem");
 
-let started=false;
-
-// 🖱️ Kalbe tıklanınca
-heart.addEventListener("click",(e)=>{
-
-  // ✨ Kalp uçuşu
-  for(let i=0;i<12;i++){
-    const h=document.createElement("div");
-    h.className="mini";
-    h.textContent="💗";
-    h.style.left=e.clientX+"px";
-    h.style.top=e.clientY+"px";
-    h.style.setProperty("--x",(Math.random()*200-100)+"px");
-    h.style.setProperty("--y",(Math.random()*-200)+"px");
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),1000);
-  }
-
-  // 🎤 Şiiri yaz
-  if(!started){
-    let idx=0;
-    function type(){
-      if(idx<poemText.length){
-        poem.textContent += poemText.charAt(idx++);
-        setTimeout(type,45);
-      }
-    }
-    type();
-  }
-
-  // 🎧 Müzik çalma
-  if(!started){
-    started=true;
-    const a=document.createElement("audio");
-    a.src="music.mp3";
-    a.volume=0.7;
-    a.play().catch(()=>{});
-  }
+heart.addEventListener("click", () => {
+  const audio = new Audio("music.mp3");
+  audio.volume = 0.8;
+  audio.play().catch(e => console.log(e));
 });
 </script>
 
 </body>
 </html>
+
