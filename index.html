@@ -1,45 +1,157 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sana Bir Kalp 💗</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #ffb6c1, #ffe4ec);
-      font-family: Arial, sans-serif;
-    }
-    .heart {
-      font-size: 100px;
-      cursor: pointer;
-      user-select: none;
-      animation: pulse 1.4s infinite;
-    }
-    @keyframes pulse {
-      0%,100% { transform: scale(1); }
-      50% { transform: scale(1.15); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sana Bir Kalp 💗</title>
+
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#ffb6c1,#ffe4ec);
+    overflow:hidden;
+  }
+  .card{
+    width:min(420px,92vw);
+    background:rgba(255,255,255,.65);
+    border-radius:26px;
+    padding:22px;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(255,105,135,.25);
+    position:relative;
+    z-index:2;
+  }
+  h1{margin:0 0 8px;font-size:26px}
+  .heart{
+    font-size:96px;
+    cursor:pointer;
+    user-select:none;
+    animation:pulse 1.4s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.15)}
+  }
+  .poem{
+    margin-top:14px;
+    font-size:16px;
+    min-height:96px;
+    white-space:pre-line;
+  }
+  .note{
+    margin-top:10px;
+    font-size:13px;
+    opacity:.75;
+  }
+
+  /* tıklama kalpleri */
+  .mini{
+    position:fixed;
+    font-size:18px;
+    pointer-events:none;
+    animation:fly 1s ease-out forwards;
+    z-index:3;
+  }
+  @keyframes fly{
+    from{opacity:1;transform:translate(0,0)}
+    to{opacity:0;transform:translate(var(--x),var(--y))}
+  }
+
+  /* arka plan yağmur */
+  .rain{
+    position:fixed;
+    top:-20px;
+    pointer-events:none;
+    z-index:1;
+    animation:fall linear forwards;
+  }
+  @keyframes fall{
+    to{transform:translateY(110vh); opacity:0}
+  }
+</style>
 </head>
+
 <body>
 
-<div class="heart" id="heart">💖</div>
+<div class="card">
+  <h1>Sana Bir Kalp Bıraktım 💞</h1>
+  <div class="heart" id="heart">💖</div>
+  <div class="poem" id="poem"></div>
+  <div class="note">Kalbe dokun. Gerisi zaten his.</div>
+</div>
 
 <script>
-const heart = document.getElementById("heart");
+  // ---- ŞİİR ----
+  const poemText =
+`Kalbim adını ezberledi sessizce,
+Her atışında seni söyledi.
+Dünya dursa bile bir yerde,
+Ben yine sana gelirdim.`;
 
-heart.addEventListener("click", () => {
-  const audio = new Audio("music.mp3");
-  audio.volume = 0.8;
-  audio.play().catch(e => console.log(e));
-});
+  const heart = document.getElementById("heart");
+  const poem  = document.getElementById("poem");
+
+  let audioStarted = false;
+  let poemStarted  = false;
+
+  // ---- KALBE TIK ----
+  heart.addEventListener("click", (e) => {
+    // her tıkta kalpler
+    for(let i=0;i<14;i++){
+      const h=document.createElement("div");
+      h.className="mini";
+      h.textContent="💗";
+      h.style.left=e.clientX+"px";
+      h.style.top=e.clientY+"px";
+      h.style.setProperty("--x",(Math.random()*200-100)+"px");
+      h.style.setProperty("--y",(Math.random()*-200)+"px");
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),1000);
+    }
+
+    // şiir sadece ilk tıkta yazsın
+    if(!poemStarted){
+      poemStarted = true;
+      poem.textContent="";
+      let i=0;
+      (function type(){
+        if(i<poemText.length){
+          poem.textContent+=poemText.charAt(i++);
+          setTimeout(type,45);
+        }
+      })();
+    }
+
+    // müzik sadece ilk tıkta başlasın
+    if(!audioStarted){
+      audioStarted = true;
+      const audio = new Audio("music.mp3");
+      audio.volume = 0.8;
+      audio.play().catch(()=>{});
+    }
+  });
+
+  // ---- ARKA PLAN YAĞMURU ----
+  function rain(){
+    const e=document.createElement("div");
+    e.className="rain";
+    e.style.left=Math.random()*100+"vw";
+    e.style.fontSize=(Math.random()*10+12)+"px";
+    e.style.opacity=Math.random();
+    e.textContent=Math.random()>0.5?"✨":"💗";
+    const dur = Math.random()*3+3;
+    e.style.animationDuration = dur+"s";
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(), dur*1000);
+  }
+  setInterval(rain,300);
 </script>
 
 </body>
 </html>
-
