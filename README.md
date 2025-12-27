@@ -1,2 +1,2 @@
 # Seviyorsan
-sevdiğim için ufak tefek bişiler
+Sevdiğim için bişiler
